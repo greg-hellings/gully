@@ -1,6 +1,0 @@
-com\thehellings\gully\AuthenticatedRouterTest.class
-com\thehellings\gully\http\VerbTest.class
-com\thehellings\gully\http\ParameterizedRouteTest.class
-com\thehellings\gully\http\PrefixRouteTest.class
-com\thehellings\gully\stubs\HttpServerExchangeStub.class
-com\thehellings\gully\http\RouteTest.class
