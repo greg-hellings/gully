@@ -10,6 +10,14 @@
     <description>Some basic, useful routers, handlers, etc for Undertow.</description>
     <url>http://github.com/greg-hellings/gully/</url>
 
+    <developers>
+        <developer>
+            <id>greg.hellings</id>
+            <name>Greg Hellings</name>
+            <email>greg.hellings+maven@gmail.com</email>
+        </developer>
+    </developers>
+    
     <licenses>
         <license>
             <name>BSD</name>
