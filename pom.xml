@@ -3,7 +3,7 @@
 
     <groupId>com.thehellings.gully</groupId>
     <artifactId>gully</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>gully</name>
@@ -22,8 +22,8 @@
         <connection>scm:git:https://github.com/greg-hellings/gully.git</connection>
         <developerConnection>scm:git:git@github.com:greg-hellings/gully.git</developerConnection>
         <url>git@github.com:greg-hellings/gully.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>0.3</tag>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,6 +72,51 @@
             </plugin>
         </plugins>
     </build>
+
+    <profile>
+        <id>release</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-source</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupid>org.apache.maven.plugins</groupid>
+                    <artifactid>maven-javadoc-plugin</artifactid>
+                    <executions>
+                        <execution>
+                            <id>attach-javadoc</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupid>org.apache.maven.plugins</groupid>
+                    <artifactid>maven-gpg-plugin</artifactid>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
 
     <dependencies>
         <dependency>
