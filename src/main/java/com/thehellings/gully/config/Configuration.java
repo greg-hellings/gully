@@ -16,6 +16,12 @@ public class Configuration {
 	private Environment environment;
 	private HttpHandler httpHandler;
 
+	/**
+	 * Specifies a base set of configurations.
+	 *
+	 * @param environment The environment specification
+	 * @param httpHandler The base HttpHandler that will filter all requests
+	 */
 	public Configuration(final Environment environment, final HttpHandler httpHandler) {
 		this.environment = environment;
 		this.httpHandler = httpHandler;
@@ -24,12 +30,27 @@ public class Configuration {
 	/**
 	 * Default handler will be set as the Error404 handler.
 	 *
-	 * @param environment
+	 * @param environment The environment to configure for this server
 	 */
 	public Configuration(final Environment environment) {
 		this(environment, new Error404());
 	}
 
+	/**
+	 * Environment will be set to {@link DefaultEnvironment}
+	 *
+	 * @param httpHandler The base handler for this class
+	 */
+	public Configuration(final HttpHandler httpHandler) {
+		this(new DefaultEnvironment("default"), httpHandler);
+	}
+
+	/**
+	 * Tests if this Configuration's {@link Environment} equals another
+	 *
+	 * @param environment The Environment to compare against
+	 * @return The result of {@link Environment#equals(Object)} on the two Environments
+	 */
 	public boolean isEnvironment(final Environment environment) {
 		return this.environment.equals(environment);
 	}
@@ -41,7 +62,7 @@ public class Configuration {
 	/**
 	 * Return true to start up an HTTP server, false to suppress. Default true.
 	 *
-	 * @return
+	 * @return True if this configuration should serve HTTP
 	 */
 	public boolean isHttpServer() {
 		return true;
@@ -50,7 +71,7 @@ public class Configuration {
 	/**
 	 * Returns the HTTP port to serve, if applicable. Defaults to 8080.
 	 *
-	 * @return
+	 * @return The integer number of the port to run on (between 1 and 65535)
 	 */
 	public int getHttpPort() {
 		return 8080;
@@ -59,7 +80,7 @@ public class Configuration {
 	/**
 	 * IP address to listen on. Defaults to blank (all)
 	 *
-	 * @return
+	 * @return A string representation of the IP address to listen on, blank to listen on all IPs on the system
 	 */
 	public String getHttpHost() {
 		return "";
@@ -73,7 +94,7 @@ public class Configuration {
 	 *     threads to this value, accordingly.
 	 * </p>
 	 *
-	 * @return
+	 * @return The number of IO threads to spawn in the base process
 	 */
 	public int getIoThreads() {
 		return Runtime.getRuntime().availableProcessors();
@@ -93,7 +114,7 @@ public class Configuration {
 	 *     Default value retunred is twice the number of available cores.
 	 * </p>
 	 *
-	 * @return
+	 * @return The number of worker threads to spawn in the Undertow process
 	 */
 	public int getWorkerThreads() {
 		return 2 * Runtime.getRuntime().availableProcessors();

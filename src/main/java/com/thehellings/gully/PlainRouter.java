@@ -213,16 +213,9 @@ public class PlainRouter implements HttpHandler, Router {
 		final String path = exchange.getRelativePath();
 		final Route route = new Route(verb, path);
 		final HandlerMatch handlerMatch = this.matcher.matchRoute(route);
-		if (handlerMatch.getHandler() == null) {
-			if (execute) {
-				this.defaultHandler.handleRequest(exchange);
-			} else {
-				handlerMatch.setHandler(this.defaultHandler);
-			}
-		}
 		exchange.putAttachment(PlainRouter.ATTACHMENT_KEY, new RouteAttachment(handlerMatch));
+		final HttpHandler handler = handlerMatch.getHandler();
 		if (execute) {
-			final HttpHandler handler = handlerMatch.getHandler();
 			if (handler != null) {
 				final String remainder = handlerMatch.getRemainder();
 				if (remainder != null) {
@@ -232,6 +225,8 @@ public class PlainRouter implements HttpHandler, Router {
 			} else {
 				this.defaultHandler.handleRequest(exchange);
 			}
+		} else {
+			handlerMatch.setHandler(handler == null ? this.defaultHandler : handler);
 		}
 	}
 

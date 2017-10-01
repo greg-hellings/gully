@@ -10,12 +10,13 @@ import io.undertow.server.HttpHandler;
  * Primary entry-point for the Gully server.
  *
  * <p>
- *     This class creatues an entirely new server object, according to the variables configured in the provided
+ *     This class creates an entirely new server object, according to the variables configured in the provided
  *     {@link Configuration} object or using reasonable defaults if none is provided.
  * </p>
  */
 public class Server {
 	private Configuration configuration;
+	private Undertow undertow;
 
 	public Server(final Configuration configuration) {
 		this.configuration = configuration;
@@ -29,6 +30,9 @@ public class Server {
 		this(new Configuration(new DefaultEnvironment("Default")));
 	}
 
+	/**
+	 * Configure, create, and start the Undertow server for this particular configuration.
+	 */
 	public void start() {
 		Undertow.Builder builder = Undertow.builder();
 		if (this.configuration.isHttpServer()) {
@@ -39,6 +43,14 @@ public class Server {
 		builder.setIoThreads(this.configuration.getIoThreads());
 		builder.setWorkerThreads(this.configuration.getWorkerThreads());
 		builder.setHandler(this.configuration.getBaseHandler());
-		builder.build().start();
+		this.undertow = builder.build();
+		this.undertow.start();
+	}
+
+	/**
+	 * Attempt to stop the Undertow server for this configuration.
+	 */
+	public void stop() {
+		this.undertow.stop();
 	}
 }

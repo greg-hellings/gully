@@ -2,3 +2,5 @@ target/*
 *.iml
 *.ipr
 *.iws
+pom.xml.releaseBackup
+release.properties

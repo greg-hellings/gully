@@ -7,9 +7,9 @@ import com.thehellings.gully.http.Verb;
  * <p>
  * An exact match is more strict than the checks in {@link Route}. In this instance, even the verbs of the two classes
  * must be an exact match. As such, it can be compared against any other type of Route object, and both the path and
- * the verb portions must match exactly. Thus, it would be inappropriate to create an instnace of this class with the
+ * the verb portions must match exactly. Thus, it would be inappropriate to create an instance of this class with the
  * Verb.ANY value in most cases, as a user request would not come in asking for Verb.ANY. However, this behavior is not
- * prevented as there might be unforseen reasons to make such a call.
+ * prevented as there might be unforeseen reasons to make such a call.
  */
 public class ExactRoute extends Route {
 	public ExactRoute(Verb verb, String path) {

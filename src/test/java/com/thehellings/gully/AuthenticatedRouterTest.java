@@ -1,39 +1,46 @@
 package com.thehellings.gully;
 
+import com.thehellings.gully.config.Configuration;
 import com.thehellings.gully.http.Verb;
-import com.thehellings.gully.stubs.HttpServerExchangeStub;
 import io.undertow.security.api.AuthenticationMechanism;
 import io.undertow.security.idm.Account;
+import io.undertow.security.idm.Credential;
 import io.undertow.security.idm.IdentityManager;
+import io.undertow.security.impl.BasicAuthenticationMechanism;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
-import junit.framework.TestCase;
+import org.apache.http.HttpHost;
+import org.apache.http.client.fluent.Executor;
+import org.apache.http.client.fluent.Request;
 import org.jboss.logging.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class AuthenticatedRouterTest extends TestCase {
+public class AuthenticatedRouterTest {
 	private List<AuthenticationMechanism> mechanisms;
 	private @Mock IdentityManager identityManager;
 	private final static Logger log = Logger.getLogger(AuthenticatedRouterTest.class);
+	private HttpHandler error;
+	private HttpHandler handler;
+	private Server server;
+
+	private Executor executor;
 
 	@Before
 	public void setUp() {
-		// Mock out authentication mechanisms
-		this.mechanisms = new ArrayList<>(1);
 		MockitoAnnotations.initMocks(this);
-		AuthenticationMechanism mechanism = mock(AuthenticationMechanism.class);
-		when(mechanism.authenticate(any(), any())).thenReturn(AuthenticationMechanism.AuthenticationMechanismOutcome.AUTHENTICATED);
-		this.mechanisms.add(mechanism);
+		// Mock out authentication mechanisms
+		this.mechanisms = Collections.<AuthenticationMechanism>singletonList(new BasicAuthenticationMechanism("Test"));
 		// Mock out Identity Manager
 		Principal principal = mock(Principal.class);
 		when(principal.getName()).thenReturn("admin");
@@ -41,52 +48,51 @@ public class AuthenticatedRouterTest extends TestCase {
 		when(account.getPrincipal()).thenReturn(principal);
 		when(this.identityManager.verify(account)).thenReturn(account);
 		when(this.identityManager.verify(eq("admin"), any())).thenReturn(account);
+		when(this.identityManager.verify((Credential) any())).thenReturn(account);
+
+		this.executor = Executor.newInstance()
+				.auth(new HttpHost("localhost", 8080),"admin", "password")
+				.authPreemptive(new HttpHost("localhost", 8080));
+
+		this.error = mock(HttpHandler.class);
+		this.handler = mock(HttpHandler.class);
 	}
+
+	@After
+    public void tearDown() throws Exception {
+	    this.server.stop();
+	    Thread.sleep(1000);
+    }
 
 	@Test
 	public void testPassesExactRoute() throws Exception {
-		// Mocks, first
-		HttpHandler handler = mock(HttpHandler.class);
-		HttpServerExchange exchange = HttpServerExchangeStub.createHttpExchange();
-		exchange.setRequestMethod(HttpString.tryFromString("GET"));
-		exchange.setRequestPath("/test");
-		exchange.setRelativePath("/test");
-//		when(exchange.getRequestMethod()).thenReturn(HttpString.tryFromString("GET"));
-//		when(exchange.getRequestPath()).thenReturn("/test");
-		HttpHandler error = mock(HttpHandler.class);
-		// Then real objects
-		AuthenticatedRouter router = new AuthenticatedRouter(this.mechanisms, this.identityManager, error);
-		router.addExactRoute(Verb.GET, "/test", handler);
-		try {
-			router.handleRequest(exchange);
-		} catch(Exception ex) {
-			log.error("Error while running test.", ex);
-		}
+        AuthenticatedRouter router = new AuthenticatedRouter(this.mechanisms, this.identityManager, error);
+        router.addExactRoute(Verb.GET, "/authed", handler);
+	    this.server = new Server(new Configuration(router));
+	    this.server.start();
+	    Thread.sleep(1000);
+		// Execute the request
+        this.executor.execute(Request.Get("http://localhost:8080/authed"))
+                .discardContent();
 
-		verify(handler, times(1)).handleRequest(exchange);
-		verify(error, times(0)).handleRequest(exchange);
+		verify(handler, times(1)).handleRequest(Mockito.any(HttpServerExchange.class));
+		verify(error, times(0)).handleRequest(Mockito.any(HttpServerExchange.class));
 	}
 
 	@Test
 	public void testPassesExactRouteThroughParent() throws Exception {
-		HttpHandler handler = mock(HttpHandler.class);
-		HttpHandler error = mock(HttpHandler.class);
-		HttpServerExchange exchange = HttpServerExchangeStub.createHttpExchange();
-		exchange.setRequestMethod(HttpString.tryFromString("POST"));
-		exchange.setRequestPath("/test/inner");
-		exchange.setRelativePath("/test/inner");
-		// Test objects
-		PlainRouter router = new PlainRouter(error);
-		AuthenticatedRouter authRouter = new AuthenticatedRouter(this.mechanisms, this.identityManager, error);
-		router.addPrefixRoute("/test", authRouter);
-		authRouter.addExactRoute(Verb.POST, "/inner", handler);
-		try {
-			router.handleRequest(exchange);
-		} catch(Exception ex) {
-			log.error("Error while running test", ex);
-		}
+        AuthenticatedRouter router = new AuthenticatedRouter(this.mechanisms, this.identityManager, error);
+        router.addExactRoute(Verb.POST, "/authed", handler);
+        PlainRouter plainRouter = new PlainRouter(error);
+        plainRouter.addPrefixRoute(Verb.POST, "/plain", router);
+	    this.server = new Server(new Configuration(plainRouter));
+	    this.server.start();
+	    Thread.sleep(1000);
+	    // Execute the request
+	    this.executor.execute(Request.Post("http://localhost:8080/plain/authed"))
+                .discardContent();
 
-		verify(handler, times(1)).handleRequest(exchange);
-		verify(error, times(0)).handleRequest(exchange);
+		verify(handler, times(1)).handleRequest(Mockito.any(HttpServerExchange.class));
+		verify(error, times(0)).handleRequest(Mockito.any(HttpServerExchange.class));
 	}
 }

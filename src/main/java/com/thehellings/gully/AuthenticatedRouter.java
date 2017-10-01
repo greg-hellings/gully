@@ -69,6 +69,7 @@ public class AuthenticatedRouter extends PlainRouter {
 	 * @param errorHandler The default handler to be called when no other handler is discovered
 	 */
 	public AuthenticatedRouter(List<AuthenticationMechanism> mechanisms, IdentityManager identityManager, HttpHandler errorHandler) {
+		super(errorHandler);
 		AuthenticationCallHandler authenticationCallHandler = new AuthenticationCallHandler(new PassThruHandler(errorHandler));
 		this.authenticationConstraintHandler = new AuthenticatedRouterConstraintHandler(authenticationCallHandler);
 		AuthenticationMechanismsHandler authenticationMechanismsHandler = new AuthenticationMechanismsHandler(authenticationConstraintHandler, mechanisms);
@@ -78,7 +79,9 @@ public class AuthenticatedRouter extends PlainRouter {
 	@Override
 	public void handleRequest(HttpServerExchange exchange) throws Exception {
 		this.handleRequest(exchange, false); // Find the matching router and add the attachment
+		UndertowLogger.REQUEST_LOGGER.info("Routed authenticated request");
 		this.startChain.handleRequest(exchange); // Begin the march up the execution chain
+		UndertowLogger.REQUEST_LOGGER.info("Dispatched authenticated request");
 	}
 
 	@Override
@@ -195,6 +198,7 @@ public class AuthenticatedRouter extends PlainRouter {
 		public void handleRequest(final HttpServerExchange httpServerExchange) throws Exception {
 			final PlainRouter.RouteAttachment attachment = httpServerExchange.getAttachment(PlainRouter.ATTACHMENT_KEY);
 			HttpHandler handler = attachment.getHandler();
+			UndertowLogger.REQUEST_LOGGER.info("Found authenticated route.", handler, null);
 			if (handler == null) {
 				this.errorHandler.handleRequest(httpServerExchange);
 			} else {
