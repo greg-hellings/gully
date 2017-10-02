@@ -96,6 +96,7 @@ public class AuthenticatedRouter extends PlainRouter {
 	 * @param route The route to add to this class
 	 * @param handler The object that will respond to requests on this route
 	 * @param requireAuthentication True to require authentication, false to leave it optional
+	 * @return The Route object that wraps the other values
 	 */
 	public Route addRoute(Route route, HttpHandler handler, boolean requireAuthentication) {
 		this.authenticationConstraintHandler.setRequired(route, requireAuthentication);
@@ -104,9 +105,10 @@ public class AuthenticatedRouter extends PlainRouter {
 
 	/**
 	 * @see PlainRouter#addRoute(String, HttpHandler)
-	 * @param path
-	 * @param handler
+	 * @param path Same as the parent method
+	 * @param handler Same as the parent method
 	 * @param requireAuthentication True if authentication should be required, false if it is optional
+	 * @return The Route object that wraps the other values
 	 */
 	public Route addRoute(String path, HttpHandler handler, boolean requireAuthentication) {
 		Route route = new Route(Verb.ANY, path);
@@ -114,11 +116,12 @@ public class AuthenticatedRouter extends PlainRouter {
 	}
 
 	/**
-	 * @param verb
-	 * @param path
-	 * @param handler
+	 * @param verb The HTTP {@link Verb} to match
+	 * @param path The path to match
+	 * @param handler The handler to invoke on a matching request
 	 * @param requireAuthentication True if authentication should be required, false if it is optional
-	 * @return
+	 * @return The Route object wrapping the other values
+	 * @see #addRoute(Verb, String, HttpHandler)
 	 */
 	public Route addRoute(Verb verb, String path, HttpHandler handler, boolean requireAuthentication) {
 		Route route = new Route(verb, path);
@@ -127,11 +130,12 @@ public class AuthenticatedRouter extends PlainRouter {
 
 	/**
 	 *
-	 * @param verb
-	 * @param path
-	 * @param handler
+	 * @param verb The HTTP {@link Verb} to match
+	 * @param path The path to match
+	 * @param handler The handler to invoke on a matching request
 	 * @param requireAuthentication True if authentication should be required, false if it is optional
-	 * @return
+	 * @return The Route object wrapping the other values
+	 * @see #addExactRoute(Verb, String, HttpHandler)
 	 */
 	public Route addExactRoute(Verb verb, String path, HttpHandler handler, boolean requireAuthentication) {
 		Route route = new ExactRoute(verb, path);
@@ -140,11 +144,12 @@ public class AuthenticatedRouter extends PlainRouter {
 
 	/**
 	 *
-	 * @param verb
-	 * @param path
-	 * @param handler
+	 * @param verb The HTTP {@link Verb} to match
+	 * @param path The path to match
+	 * @param handler The handler to invoke on a matching request
 	 * @param requireAuthentication True if authentication should be required, false if it is optional
-	 * @return
+	 * @return The Route object wrapping the other values
+	 * @see #addPrefixRoute(Verb, String, HttpHandler)
 	 */
 	public Route addPrefixRoute(Verb verb, String path, HttpHandler handler, boolean requireAuthentication) {
 		Route route = new PrefixRoute(verb, path);
@@ -152,11 +157,13 @@ public class AuthenticatedRouter extends PlainRouter {
 	}
 
 	/**
+	 * Matches the {@link Verb#ANY} method
 	 *
-	 * @param path
-	 * @param handler
+	 * @param path The path to match
+	 * @param handler The handler to invoke on a matching request
 	 * @param requireAuthentication True if authentication should be required, false if it is optional
-	 * @return
+	 * @return The Route object that wraps the other values
+	 * @see #addPrefixRoute(Verb, String, HttpHandler, boolean)
 	 */
 	public Route addPrefixRoute(String path, HttpHandler handler, boolean requireAuthentication) {
 		Route route = new PrefixRoute(Verb.ANY, path);
@@ -165,11 +172,12 @@ public class AuthenticatedRouter extends PlainRouter {
 
 	/**
 	 *
-	 * @param verb
-	 * @param path
-	 * @param handler
+	 * @param verb The HTTP {@link Verb} to match
+	 * @param path The path to match
+	 * @param handler The handler to invoke on a matching request
 	 * @param requireAuthentication True if authentication should be required, false if it is optional
-	 * @return
+	 * @return The Route object that wraps the other values
+	 * @see #addParameterizedRoute(Verb, String, HttpHandler)
 	 */
 	public Route addParameterizedRoute(Verb verb, String path, HttpHandler handler, boolean requireAuthentication) {
 		Route route = new ParameterizedRoute(verb, path);
@@ -177,11 +185,13 @@ public class AuthenticatedRouter extends PlainRouter {
 	}
 
 	/**
+	 * Matches the {@link Verb#ANY} method
 	 *
-	 * @param path
-	 * @param handler
+	 * @param path The path to match
+	 * @param handler The handler to invoke on a matching request
 	 * @param requireAuthentication True if authentication should be required, false if it is optional
-	 * @return
+	 * @return The Route object that wraps the other values
+	 * @see #addParameterizedRoute(Verb, String, HttpHandler)
 	 */
 	public Route addParameterizedRoute(String path, HttpHandler handler, boolean requireAuthentication) {
 		Route route = new ParameterizedRoute(Verb.ANY, path);

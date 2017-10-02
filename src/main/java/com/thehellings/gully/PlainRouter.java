@@ -34,8 +34,9 @@ public class PlainRouter implements HttpHandler, Router {
 
 	/**
 	 * Creates a new router with the default handler, if the matcher returns empty and using the custom matcher provided
-	 * @param defaultHandler
-	 * @param matcher
+	 *
+	 * @param defaultHandler If no matching route is found, call this handler (e.g. error handler or the like)
+	 * @param matcher A custom implementation of a matcher, if one is desired
 	 */
 	public PlainRouter(HttpHandler defaultHandler, Matcher matcher) {
 		this.defaultHandler = defaultHandler;
@@ -56,7 +57,8 @@ public class PlainRouter implements HttpHandler, Router {
 	/**
 	 * Creates a new router to route between different pages or segments of a site.
 	 * <p>
-	 * Pages which are not handled by your requests will be sent back an HTTP 404 "Page Not Found" response code.
+	 *     Pages which are not handled by your requests will be sent back an HTTP 404 "Page Not Found" response code.
+	 * </p>
 	 */
 	public PlainRouter() {
 		this(new Error404());
@@ -64,6 +66,7 @@ public class PlainRouter implements HttpHandler, Router {
 
 	/**
 	 * If you want to execute some code around the process of adding a route, this is the method to override.
+	 *
 	 * <p>
 	 *     All calls to add*Route are shunted through this method, so if you want to subclass this class and change some
 	 *     of its default behaviors, this is the method that you are going to need to override. Likewise, if you want
@@ -150,8 +153,8 @@ public class PlainRouter implements HttpHandler, Router {
 	/**
 	 * Same as {@link #addPrefixRoute(Verb, String, HttpHandler)}, but defaults Verb to {@link Verb#ANY}
 	 *
-	 * @param path
-	 * @param handler
+	 * @param path The path prefix to match
+	 * @param handler The handler to call for matching invocations
 	 */
 	public Route addPrefixRoute(final String path, final HttpHandler handler) {
 		return this.addPrefixRoute(Verb.ANY, path, handler);
@@ -165,6 +168,7 @@ public class PlainRouter implements HttpHandler, Router {
 	 * the left. A parameterized route may have multiple parameters in it, each of which will be accessible to your
 	 * handler via the {@link HttpServerExchange#getAttachment(AttachmentKey)} method. Invoke it with the value of
 	 * {@link #ATTACHMENT_KEY} to fetch out the parameters.
+	 * </p>
 	 *
 	 * @param verb The Verb to match against
 	 * @param path The parameterized path portion of the URL
@@ -178,13 +182,14 @@ public class PlainRouter implements HttpHandler, Router {
 	/**
 	 * Same as {@link #addParameterizedRoute(Verb, String, HttpHandler)} with {@link Verb#ANY} set as verb
 	 *
-	 * @param path
-	 * @param handler
+	 * @param path The parameterized path to match.
+	 * @param handler The handler to call, when a match is found
 	 */
 	public Route addParameterizedRoute(final String path, final HttpHandler handler) {
 		return this.addParameterizedRoute(Verb.ANY, path, handler);
 	}
 
+	@Override
 	public void handleRequest(HttpServerExchange exchange) throws Exception {
 		this.handleRequest(exchange, true);
 	}
@@ -206,7 +211,7 @@ public class PlainRouter implements HttpHandler, Router {
 	 *
 	 * @param exchange The exhcange object being handled currently
 	 * @param execute True to execute the defined handler after attaching it, false to only attach it
-	 * @throws Exception
+	 * @throws Exception If a sub-handler encounters an exception
 	 */
 	protected void handleRequest(HttpServerExchange exchange, boolean execute) throws Exception {
 		final Verb verb = Verb.valueOf(exchange.getRequestMethod().toString());

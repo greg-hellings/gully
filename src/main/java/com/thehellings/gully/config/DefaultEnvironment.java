@@ -40,9 +40,9 @@ public class DefaultEnvironment implements Environment {
 	/**
 	 * Creates a default, empty set of variables.
 	 *
-	 * @param environmentName
-	 * @param isDevelopmentLike
-	 * @param isProductionLike
+	 * @param environmentName The name of the environment
+	 * @param isDevelopmentLike True if this environment is "like" development (may or may not be -actual- development)
+	 * @param isProductionLike True if this environment is "like" production (may or may not be -actual- production)
 	 */
 	public DefaultEnvironment(final String environmentName, final boolean isDevelopmentLike, final boolean isProductionLike) {
 		this(environmentName, isDevelopmentLike, isProductionLike, new HashMap<String, Object>());
@@ -50,7 +50,8 @@ public class DefaultEnvironment implements Environment {
 
 	/**
 	 * Creates a default, empty environment which is neither dev-like nor production-like
-	 * @param environmentName
+	 *
+	 * @param environmentName The name of the environment
 	 */
 	public DefaultEnvironment(final String environmentName) {
 		this(environmentName, false, false);

@@ -49,7 +49,8 @@ public class Configuration {
 	 * Tests if this Configuration's {@link Environment} equals another
 	 *
 	 * @param environment The Environment to compare against
-	 * @return The result of {@link Environment#equals(Object)} on the two Environments
+	 * @return The result of {@link Environment}'s equals(Object) on the two Environments. Obviously whatever
+	 * implementation of Environment is being used needs to implement that method
 	 */
 	public boolean isEnvironment(final Environment environment) {
 		return this.environment.equals(environment);
