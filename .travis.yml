@@ -3,4 +3,6 @@ script:
   - mvn test
 cache:
   directories:
-    - ~/.m2/repository
+    - ~/.m2/
+after_success:
+  - bash < (curl -s https://codecov.io/bash)

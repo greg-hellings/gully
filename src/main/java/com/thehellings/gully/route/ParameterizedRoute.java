@@ -40,7 +40,7 @@ public class ParameterizedRoute extends Route {
 		if (parts.length > this.routeParts.size()) {
 			return new RouteMatch(false);
 		}
-		Map <String, String> parameters = new HashMap<String, String>();
+		Map <String, String> parameters = new HashMap<>();
 		// Check component parts
 		int i;
 		for (i = 0; i < parts.length; ++i) {
@@ -52,15 +52,17 @@ public class ParameterizedRoute extends Route {
 				parameters.put(template.getName(), parts[i]);
 			}
 		}
-		// Allows us to have multiple trailing segments of the URL which are missing ONLY IF all of them ara parameters
+		// Allows us to have multiple trailing segments of the URL which are missing ONLY IF all of them are parameters.
+		// Continues searching for matches when there are more segments that _could_ be matched but which are not
+		// present in the path being compared against
 		for (; i < this.routeParts.size(); ++i) {
 			Part template = this.routeParts.get(i);
+			// Empty string segments are not to be matched, except by a parameter, thus if we encounter any path segments
+			// at this point that do not match the empty string, then we have a match bust
 			if (!template.equals("")) {
 				return new RouteMatch(false);
 			}
-			if (template.store()) {
-				parameters.put(template.getName(), "");
-			}
+			parameters.put(template.getName(), "");
 		}
 		return new RouteMatch(true, parameters, "");
 	}

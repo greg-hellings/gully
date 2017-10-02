@@ -62,7 +62,7 @@ public class DefaultEnvironment implements Environment {
 	 *
 	 * <p>
 	 *     Only compares the names of two environments to determine if they are equal. It will not compare the specific
-	 *     variable names within them. You will need to either extend this class or implement your own Environemtn if you
+	 *     variable names within them. You will need to either extend this class or implement your own Environment if you
 	 *     wish to have additional, deeper checks on environment equality.
 	 * </p>
 	 *

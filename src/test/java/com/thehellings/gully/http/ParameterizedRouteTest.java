@@ -3,10 +3,13 @@ package com.thehellings.gully.http;
 import com.thehellings.gully.route.ParameterizedRoute;
 import com.thehellings.gully.route.Route;
 import com.thehellings.gully.route.RouteMatch;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ParameterizedRouteTest extends TestCase {
+import static org.junit.Assert.*;
 
+public class ParameterizedRouteTest {
+
+	@Test
 	public void testMatchesGetWithSingleParameter() throws Exception {
 		ParameterizedRoute testing = new ParameterizedRoute(Verb.GET, "/path/{parameter}");
 		Route yes1 = new Route(Verb.GET, "/path/1");
@@ -20,6 +23,7 @@ public class ParameterizedRouteTest extends TestCase {
 		assertFalse("Rejects failed match on verb", testing.matches(no2).getMatching());
 	}
 
+	@Test
 	public void testMatchesGetWithTwoParameters() throws Exception {
 		ParameterizedRoute testing = new ParameterizedRoute(Verb.GET, "/path/{one}/{two}");
 		Route yes1 = new Route(Verb.GET, "/path/1/2");
@@ -51,6 +55,7 @@ public class ParameterizedRouteTest extends TestCase {
 		assertFalse("Does not match on prefix mismatch", match.getMatching());
 	}
 
+	@Test
 	public void testMatchesWithoutLeadingSlash() throws Exception {
 		ParameterizedRoute testing = new ParameterizedRoute(Verb.GET, "path/{one}");
 		Route yes1 = new Route(Verb.GET, "/path/1");
@@ -64,5 +69,16 @@ public class ParameterizedRouteTest extends TestCase {
 		assertEquals("Paraemter one is 2", "2", match.getAttachment().get("one"));
 		match = testing.matches(no1);
 		assertFalse("Matching doesn't mess with non-matched components", match.getMatching());
+	}
+
+	@Test
+	public void testMatchesEdgeCases() {
+		ParameterizedRoute testing = new ParameterizedRoute(Verb.DELETE, "/path/{seven}/mandatory");
+		assertFalse("Does not match on no Routes", testing.matches(null).getMatching());
+		assertFalse("All portions matching", testing.matches(new Route(Verb.DELETE, "/path")).getMatching());
+		assertTrue("Matches trailing properly", testing.matches(new Route(Verb.DELETE, "/path/7/mandatory")).getMatching());
+
+		testing = new ParameterizedRoute(Verb.ANY, "/{path/weird}");
+		assertTrue("Templates must fully match", testing.matches(new Route(Verb.GET, "/{path/weird}")).getMatching());
 	}
 }

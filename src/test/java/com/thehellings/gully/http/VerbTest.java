@@ -9,5 +9,6 @@ public class VerbTest extends TestCase {
 		assertTrue("POST matches POST", Verb.POST.matches(Verb.POST));
 		assertTrue("ANY matches GET", Verb.ANY.matches(Verb.GET));
 		assertTrue("GET matches ANY", Verb.GET.matches(Verb.ANY));
+		assertFalse("Verb doesn't match non-Verbs", Verb.DELETE.matches("hi"));
 	}
 }

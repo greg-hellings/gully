@@ -53,4 +53,13 @@ public class Server {
 	public void stop() {
 		this.undertow.stop();
 	}
+
+	/**
+	 * Fetch the current configuration
+	 *
+	 * @return The configuration created when this server was initialized
+	 */
+	public Configuration getConfiguration() {
+		return this.configuration;
+	}
 }

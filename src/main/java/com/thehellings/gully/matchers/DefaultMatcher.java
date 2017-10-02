@@ -56,19 +56,6 @@ public class DefaultMatcher implements Matcher {
 			this.handler = handler;
 		}
 
-		@Override
-		public boolean equals(Object o) {
-			if (o instanceof Pair) {
-				Pair p = (Pair) o;
-				return this.route.matches(p.route).getMatching() && (this.handler == p.handler);
-			}
-			if (o instanceof Route) {
-				Route r = (Route) o;
-				return this.route.matches(r).getMatching();
-			}
-			return false;
-		}
-
 		public Route getRoute() {
 			return this.route;
 		}

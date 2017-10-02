@@ -26,7 +26,7 @@ public class PrefixRoute extends Route {
 
 	@Override
 	public RouteMatch matches(Object o) {
-		if (! (o instanceof Route) || o == null) {
+		if (! (o instanceof Route)) {
 			return new RouteMatch(false);
 		}
 		Route other = (Route) o;
