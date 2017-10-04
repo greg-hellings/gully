@@ -67,7 +67,7 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<repository>
-			<id>ossrelease</id>
+			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>

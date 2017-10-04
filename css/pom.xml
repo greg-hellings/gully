@@ -1,9 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
-		<artifactId>gully-parent</artifactId>
+		<artifactId>gully</artifactId>
 		<groupId>com.thehellings.gully</groupId>
 		<version>0.9-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>css</artifactId>
@@ -17,8 +18,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.thehellings.gully</groupId>
-			<artifactId>gully</artifactId>
-			<version>${version}</version>
+			<artifactId>gully-server</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.thehellings</groupId>
