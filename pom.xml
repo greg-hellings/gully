@@ -8,7 +8,7 @@
 	<!-- Properties which might need updating -->
 	<properties>
 		<!-- dependency versioning -->
-		<agglutinator-version>1.0</agglutinator-version>
+		<agglutinator-version>1.2</agglutinator-version>
 		<apache-http-fluent-version>4.5.3</apache-http-fluent-version>
 		<junit-version>4.12</junit-version>
 		<mockito-core-version>2.10.0</mockito-core-version>
